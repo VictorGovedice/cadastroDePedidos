@@ -74,6 +74,20 @@ const Pedido = () => {
             return;
         }
     
+        // Validar o formato do email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Erro: Formato de e-mail inválido. Seu email deve conter o seu nome e terminar com @gmail.com.');
+            return;
+        }
+    
+        // Validar se o email contém o nome da pessoa e @gmail.com
+        const nomeDominio = email.split('@')[0];
+        if (!nome.toLowerCase() === nomeDominio || !email.toLowerCase().endsWith('@gmail.com')) {
+            alert('Erro: Seu email deve conter o seu nome e terminar com @gmail.com.');
+            return;
+        }
+    
         const pedidoData = {
             usuario: nome,
             email: email,
@@ -100,7 +114,7 @@ const Pedido = () => {
             setUsuarioInfo({ nome, email, userId: data.userId });
             setPedidoInfo({ ...pedidoData, nome, email });
             setModalIsOpen(true);
-
+    
             // Atualizar o estoque localmente
             setProdutos(produtos.map(produto => {
                 const pedido = pedidos.find(p => p.produto === produto.ID.toString());
@@ -114,7 +128,6 @@ const Pedido = () => {
             setErroCadastro(error.message);
         }
     };
-
     const handleDelete = (index) => {
         const updatedPedidos = [...pedidos];
         updatedPedidos.splice(index, 1);

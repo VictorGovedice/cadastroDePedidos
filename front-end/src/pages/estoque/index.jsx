@@ -6,19 +6,18 @@ import axios from 'axios'; // Importe o axios para fazer requisições HTTP
 const Estoque = () => {
   const [produtos, setProdutos] = useState([]);
 
-  useEffect(() => {
-    // Função para buscar os produtos do backend
-    const fetchProdutos = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/produtos');
-        const sortedProdutos = response.data.sort((a, b) => a.ID - b.ID);
-        setProdutos(sortedProdutos);
-      } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
-      }
-    };
+  const fetchProdutos = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/produtos');
+      const sortedProdutos = response.data.sort((a, b) => a.ID - b.ID);
+      console.log('Produtos obtidos do back-end:', sortedProdutos); // Log dos produtos obtidos
+      setProdutos(sortedProdutos);
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error); // Log do erro
+    }
+  };
 
-    // Chama a função para buscar os produtos quando o componente for montado
+  useEffect(() => {
     fetchProdutos();
   }, []);
 

@@ -144,13 +144,18 @@ const AreaUsuario = () => {
         };
     
         try {
-            console.log('Dados enviados para salvar alterações:', { pedidos: pedidos, usuarioLogado });
+            // Verifique se pedidos não está vazio e está no formato correto
+            if (!pedidos || pedidos.length === 0 || !Array.isArray(pedidos) || pedidos.some(pedido => !pedido.itens || pedido.itens.length === 0 || !Array.isArray(pedido.itens))) {
+                throw new Error('Formato dos pedidos inválido');
+            }
+    
+            console.log('Dados enviados para salvar alterações:', { pedidos, usuarioLogado });
             const response = await fetch('http://localhost:3001/salvarAlteracoes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ pedidos: pedidos, usuarioLogado })
+                body: JSON.stringify({ pedidos, usuarioLogado }) // Envie os pedidos diretamente
             });
     
             if (!response.ok) {
@@ -160,11 +165,12 @@ const AreaUsuario = () => {
     
             const data = await response.json();
             console.log('Alterações salvas com sucesso!', data);
+            window.alert('Parabéns! Seus produtos foram cadastrados.');
+    
         } catch (error) {
             console.error('Erro ao salvar alterações:', error.message);
         }
     };
-    
     
 
     const formatCurrency = (value) => {
@@ -288,27 +294,28 @@ const AreaUsuario = () => {
                         </form>
                     </Wrapper>
 
-                        <PedidoList style={{ marginBottom: '1.5rem', marginTop: '2.5rem' }}>
-                            <h2>Pedidos</h2>
-                            {pedidos.map((pedido) => (
-                                <div key={pedido._id}>
-                                    {pedido.itens.map(item => (
-                                        <div key={item._id} style={{ marginBottom: '1rem' }}>
-                                            <p>
-                                                Produto: {produtos.find(produto => produto._id === item.produto)?.Name} - Quantidade: <input
-                                                    type="number"
-                                                    value={item.quantidade}
-                                                    onChange={(e) => handleEditQuantidade(pedido._id, item._id, parseInt(e.target.value))}
-                                                /> - Preço Unitário: {formatCurrency(item.valorUnitario)}
-                                            </p>
-                                            <button onClick={() => handleDeleteProduto(pedido._id, item._id)}>Excluir Produto</button>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                            {/* Exibição do Valor Total da Compra */}
-                            <h2>Valor Total da Compra: {formatCurrency(calculateTotalCompra())}</h2>
-                        </PedidoList>
+                            <PedidoList style={{ marginBottom: '1.5rem', marginTop: '2.5rem' }}>
+                                <h2>Pedidos</h2>
+                                {pedidos.map((pedido) => (
+                                    <div key={pedido._id}>
+                                        {pedido.itens.map(item => (
+                                            <div key={item._id} style={{ marginBottom: '1rem' }}>
+                                                {console.log('Dados do item:', item)} {/* Adicionando um log aqui */}
+                                                <p>
+                                                    Produto: {produtos.find(produto => produto.ID === item.produto)?.Name} - Quantidade: <input
+                                                        type="number"
+                                                        value={item.quantidade}
+                                                        onChange={(e) => handleEditQuantidade(pedido._id, item._id, parseInt(e.target.value))}
+                                                    /> - Preço Unitário: {formatCurrency(item.valorUnitario)}
+                                                </p>
+                                                <button onClick={() => handleDeleteProduto(pedido._id, item._id)}>Excluir Produto</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                                {/* Exibição do Valor Total da Compra */}
+                                <h2>Valor Total da Compra: {formatCurrency(calculateTotalCompra())}</h2>
+                            </PedidoList>
                     <Button title="Salvar Alterações" variant="primary" type="button" onClick={handleSaveChanges} />
                 </Column>
             </Container>

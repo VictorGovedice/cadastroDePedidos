@@ -1,0 +1,19 @@
+Dados:
+
+Gmail:
+victorsupermecadojame@gmail.com
+Jame@589624
+
+(11) 97892-8387
+
+
+Criar um banco de dados no qual irá mostrar os produtos
+
+/produtos
+/mostrarEstoque
+
+
+DATABASE:
+
+supermecadojame
+NQ6Ln9In69P4ikZw
